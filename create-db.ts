@@ -25,10 +25,11 @@ const main = async () => {
     await Db.conn.exec(`
       CREATE TABLE IF NOT EXISTS buttons (
         eventId INTEGER PRIMARY KEY AUTOINCREMENT,
-        deviceId TEXT NOT NULL,
-        buttonId INTEGER NOT NULL,
+        deviceId TEXT,
+        buttonId INTEGER,
         eventDate INTEGER NOT NULL,
-        eventDataType TEXT NOT NULL
+        eventDataType TEXT NOT NULL,
+        eventValue TEXT
       )
     `);
   } catch (exc) {
