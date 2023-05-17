@@ -1,19 +1,34 @@
-import Db from './server/lib/db';
+import Db from './server/lib/Db';
 import config from './config';
 
 const main = async () => {
   try {
     console.log('Connecting to database');
     await Db.connect(config.dbFile);
-    console.log('Creating [observation] table');
+    console.log('Creating [devices] table');
     await Db.conn.exec(`
-      CREATE TABLE IF NOT EXISTS observation (
-        observationId INTEGER PRIMARY KEY AUTOINCREMENT,
-        stationKey TEXT NOT NULL,
-        stationName TEXT NOT NULL,
-        observationType TEXT NOT NULL,
-        observationTime INTEGER NOT NULL,
-        observationValue FLOAT NOT NULL
+      CREATE TABLE IF NOT EXISTS devices (
+        deviceId TEXT PRIMARY KEY,
+        deviceName TEXT
+      )
+    `);
+    console.log('Creating [buttons] table');
+    await Db.conn.exec(`
+      CREATE TABLE IF NOT EXISTS buttons (
+        buttonId INTEGER PRIMARY KEY AUTOINCREMENT,
+        deviceId TEXT NOT NULL,
+        buttonIndex INTEGER NOT NULL,
+        buttonDataType TEXT NOT NULL
+      )
+    `);
+    console.log('Creating [events] table');
+    await Db.conn.exec(`
+      CREATE TABLE IF NOT EXISTS buttons (
+        eventId INTEGER PRIMARY KEY AUTOINCREMENT,
+        deviceId TEXT NOT NULL,
+        buttonId INTEGER NOT NULL,
+        eventDate INTEGER NOT NULL,
+        eventDataType TEXT NOT NULL
       )
     `);
   } catch (exc) {

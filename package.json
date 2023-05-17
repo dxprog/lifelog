@@ -4,6 +4,7 @@
   "description": "The server and front-end application for LifeLog",
   "main": "index.js",
   "scripts": {
+    "create-db": "ts-node create-db.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
