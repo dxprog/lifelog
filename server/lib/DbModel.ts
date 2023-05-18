@@ -1,4 +1,3 @@
-import { Dictionary, GenericObject } from '../interfaces/common';
 import db from './Db';
 
 export enum ColumnTypes {
@@ -31,12 +30,12 @@ export interface ColumnDescriptor {
 
 type WhereClause = {
   sql: string,
-  params: Dictionary<any>,
+  params: Record<string, unknown>,
 };
 
 // Methods that generate WHERE clause conditionals from a select conditions object
 type WhereOperatorGenerator = (field: ColumnDescriptor, value: any) => WhereClause;
-const WHERE_OPERATORS: Dictionary<WhereOperatorGenerator> = {
+const WHERE_OPERATORS: Record<string, WhereOperatorGenerator> = {
   eq: (field: ColumnDescriptor, value: any): WhereClause => (
     {
       sql: `\`${field.name}\` = \$${field.name}`,
@@ -87,7 +86,7 @@ export abstract class DbModel {
   /**
    * A mapping of object properties to their respective database fields
    */
-  private static _dbFields: Dictionary<ColumnDescriptor>;
+  private static _dbFields: Record<string, ColumnDescriptor>;
 
   /**
    * The name of the object property that is the primary key in the database
@@ -104,8 +103,8 @@ export abstract class DbModel {
       .filter(field => field !== _dbPrimaryKey);
   }
 
-  private _getUpdatableFieldsQueryObject(fields: Array<string>): Dictionary<any> {
-    return fields.reduce((obj: Dictionary<any>, key: string) => {
+  private _getUpdatableFieldsQueryObject(fields: Array<string>): Record<string, unknown> {
+    return fields.reduce((obj, key) => {
       obj[`$${key}`] = this[key];
       return obj;
     }, {});
@@ -125,7 +124,7 @@ export abstract class DbModel {
    * @param row The row object returned from a database query
    * @param fieldMap The object -> database field map
    */
-  public mysqlCopyFromRow(row: Dictionary<any>) {
+  public mysqlCopyFromRow(row: Record<string, unknown>) {
     const constructor = <typeof DbModel>this.constructor;
     const { _dbFields } = constructor;
     Object.keys(_dbFields).forEach((key: string) => {
@@ -141,7 +140,7 @@ export abstract class DbModel {
    * @param {GenericObject} obj The object to create the instance from
    * @return {DbModel} The model instance
    */
-  public static createFromObject(obj: GenericObject): DbModel {
+  public static createFromObject(obj: Record<string, unknown>): DbModel | null {
     const retObj = <DbModel>this.create();
     const { _dbFields } = <typeof DbModel>retObj.constructor;
     const errors = Object.keys(_dbFields).reduce((errs: Array<string>, key: string) => {
@@ -150,7 +149,7 @@ export abstract class DbModel {
       if (obj.hasOwnProperty(key) && !schema.nullable) {
         switch (schema.type) {
           case ColumnTypes.Number:
-            valid = !Number.isNaN(obj[key] - 0);
+            valid = !Number.isNaN((obj[key] as number) - 0);
             break;
           case ColumnTypes.Boolean:
             valid = obj[key] === true || obj[key] === false;
@@ -188,7 +187,7 @@ export abstract class DbModel {
   public async sync(): Promise<void> {
     const constructor = <typeof DbModel>this.constructor;
 
-    if (!this[constructor._dbPrimaryKey]) {
+    if (constructor._dbPrimaryKey && !this[constructor._dbPrimaryKey]) {
       return this._insert();
     }
 
@@ -229,7 +228,8 @@ export abstract class DbModel {
 
     constructor._verifyFields(true);
 
-    const { _dbFields, _dbPrimaryKey } = constructor;
+    const { _dbFields } = constructor;
+    const _dbPrimaryKey = constructor._dbPrimaryKey as string;
     const fields = Object.keys(_dbFields);
     const updateableFields: Array<string> = this._updatableFields;
 
@@ -247,14 +247,14 @@ export abstract class DbModel {
    *
    * @param conditions A dictionary of conditions for the query
    */
-  public static async selectAll(conditions: Dictionary<any> = null) {
+  public static async selectAll(conditions?: Record<string, any>) {
     this._verifyFields();
 
-    const whereClause: WhereClause = conditions && this._generateWhereClause(conditions);
+    const whereClause: WhereClause | undefined = conditions && this._generateWhereClause(conditions);
     const retVal: Array<DbModel> = [];
     await db.conn.each(
-      `SELECT * FROM \`${this._dbTable}\`${whereClause.sql ? ` WHERE ${whereClause.sql}` : ''}`,
-      whereClause.params,
+      `SELECT * FROM \`${this._dbTable}\`${whereClause?.sql ? ` WHERE ${whereClause?.sql}` : ''}`,
+      whereClause?.params,
       (err: any, row: any) => {
         if (!err) {
           retVal.push(this._createThisFromRow(row));
@@ -292,7 +292,7 @@ export abstract class DbModel {
    *
    * @param conditions The conditions object
    */
-  private static _generateWhereClause(conditions: Dictionary<any> = null): WhereClause {
+  private static _generateWhereClause(conditions?: Record<string, unknown>): WhereClause {
     // { stationKey: 'KOUT', observationType: 'temperature', observationDate: { between: [ 1, 2 ] } }
     const retVal = {
       sql: '',
@@ -410,7 +410,7 @@ export function tableName(tableName: string): Function {
  *
  * @param tableSchemaObj A dictionary of class properties to column schema
  */
-export function tableSchema(tableSchemaObj: Dictionary<ColumnDescriptor>): Function {
+export function tableSchema(tableSchemaObj: Record<string, ColumnDescriptor>): Function {
   return function fieldMapDecorator<T extends DbModelPrototype>(DbModelClass:T) {
     // See if there's a primary key in the field map
     let primaryKey: (string | undefined) = undefined;
@@ -420,7 +420,7 @@ export function tableSchema(tableSchemaObj: Dictionary<ColumnDescriptor>): Funct
     });
 
     return class extends DbModelClass {
-      private static _dbFields: Dictionary<ColumnDescriptor> = tableSchemaObj;
+      private static _dbFields: Record<string, ColumnDescriptor> = tableSchemaObj;
       private static _dbPrimaryKey: (string | undefined) = primaryKey;
     }
   }
