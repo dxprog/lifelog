@@ -104,7 +104,7 @@ export abstract class DbModel {
   }
 
   private _getUpdatableFieldsQueryObject(fields: Array<string>): Record<string, unknown> {
-    return fields.reduce((obj, key) => {
+    return fields.reduce<Record<string, string>>((obj, key) => {
       obj[`$${key}`] = this[key];
       return obj;
     }, {});
