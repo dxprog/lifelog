@@ -23,7 +23,7 @@ const main = async () => {
     `);
     console.log('Creating [events] table');
     await Db.conn.exec(`
-      CREATE TABLE IF NOT EXISTS buttons (
+      CREATE TABLE IF NOT EXISTS events (
         eventId INTEGER PRIMARY KEY AUTOINCREMENT,
         deviceId TEXT,
         buttonId INTEGER,

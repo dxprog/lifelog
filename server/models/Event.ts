@@ -18,8 +18,9 @@ export interface IEvent {
 @tableSchema({
   id: { name: 'eventId', type: ColumnTypes.Number, primaryKey: true },
   deviceId: { name: 'deviceId', type: ColumnTypes.String },
-  buttonIndex: { name: 'buttonIndex', type: ColumnTypes.Number },
-  buttonDataType: { name: 'observationType', type: ColumnTypes.String },
+  eventDate: { name: 'eventDate', type: ColumnTypes.Number },
+  eventDataType: { name: 'eventDataType', type: ColumnTypes.String },
+  eventValue: { name: 'eventValue', type: ColumnTypes.String },
 })
 export class Event extends DbModel implements IEvent {
   public deviceId: string;

@@ -17,7 +17,7 @@ export interface IButton {
   id: { name: 'buttonId', type: ColumnTypes.Number, primaryKey: true },
   deviceId: { name: 'deviceId', type: ColumnTypes.String },
   buttonIndex: { name: 'buttonIndex', type: ColumnTypes.Number },
-  buttonDataType: { name: 'observationType', type: ColumnTypes.String },
+  buttonDataType: { name: 'buttonDataType', type: ColumnTypes.String },
 })
 export class Button extends DbModel implements IButton {
   public deviceId: string;
