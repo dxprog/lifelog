@@ -1,5 +1,7 @@
 import * as express from 'express';
+
 import { Event } from '../models/Event';
+import { withErrorHandler } from './helpers';
 
 // Default to one day's worth of observations (24 * 60 * 60 * 1000)
 const DEFAULT_OBSERVATION_SPAN = 86400000;
@@ -81,7 +83,7 @@ async function addEvents(req: express.Request, res: express.Response) {
 }
 
 export default function registerRoutes(app: express.Express) {
-  app.get('/events', getEvents);
-  app.post('/event', addEvent);
-  app.post('/events', addEvents);
+  app.get('/events', withErrorHandler(getEvents));
+  app.post('/event', withErrorHandler(addEvent));
+  app.post('/events', withErrorHandler(addEvents));
 }
