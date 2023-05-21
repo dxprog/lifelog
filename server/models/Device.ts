@@ -1,30 +1,19 @@
-import {
-  DbModel,
-  tableName,
-  tableSchema,
-  ColumnTypes
-} from '../lib/DbModel';
-import { EventDataType } from './types';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export interface IDevice {
-  id: string;
+  deviceId: number;
+  deviceMac: string;
   deviceName: string;
 }
 
-@tableName('devices')
-@tableSchema({
-  id: { name: 'deviceId', type: ColumnTypes.String, primaryKey: true },
-  deviceName: { name: 'deviceName', type: ColumnTypes.String },
-})
-export class Device extends DbModel implements IDevice {
-  public id: string;
+@Entity('devices')
+export class Device extends BaseEntity implements IDevice {
+  @PrimaryGeneratedColumn({ type: 'int' })
+  public deviceId: number;
+
+  @Column({ type: 'varchar', length: 32, nullable: false, unique: true })
+  public deviceMac: string;
+
+  @Column({ type: 'text' })
   public deviceName: string;
-
-  constructor() {
-    super();
-  }
-
-  public static create() {
-    return new Device();
-  }
 }

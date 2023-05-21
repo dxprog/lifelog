@@ -1,39 +1,33 @@
-import {
-  DbModel,
-  tableName,
-  tableSchema,
-  ColumnTypes
-} from '../lib/DbModel';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
 import { EventDataType } from './types';
 
 export interface IEvent {
-  deviceId?: string;
-  buttonId?: number;
+  eventId: number;
+  deviceMac: string;
+  buttonIndex: number;
   eventDate: number;
   eventDataType: EventDataType;
-  eventValue: string;
+  eventValue?: string;
 }
 
-@tableName('events')
-@tableSchema({
-  id: { name: 'eventId', type: ColumnTypes.Number, primaryKey: true },
-  deviceId: { name: 'deviceId', type: ColumnTypes.String },
-  eventDate: { name: 'eventDate', type: ColumnTypes.Number },
-  eventDataType: { name: 'eventDataType', type: ColumnTypes.String },
-  eventValue: { name: 'eventValue', type: ColumnTypes.String },
-})
-export class Event extends DbModel implements IEvent {
-  public deviceId: string;
-  public buttonId: number;
+@Entity('events')
+export class Event extends BaseEntity implements IEvent {
+  @PrimaryGeneratedColumn({ type: 'int' })
+  public eventId: number;
+
+  @Column({ type: 'varchar', length: 32, nullable: false })
+  public deviceMac: string;
+
+  @Column({ type: 'int8', nullable: false })
+  public buttonIndex: number;
+
+  @Column({ type: 'bigint', nullable: false })
   public eventDate: number;
+
+  @Column({ type: 'varchar', length: 32, nullable: false })
   public eventDataType: EventDataType;
+
+  @Column({ type: 'varchar', length: 32, nullable: true })
   public eventValue: string;
-
-  constructor() {
-    super();
-  }
-
-  public static create() {
-    return new Event();
-  }
 }

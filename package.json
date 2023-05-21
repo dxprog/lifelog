@@ -26,6 +26,7 @@
     "sqlite": "^4.2.0",
     "sqlite3": "^5.1.6",
     "ts-node": "^10.9.1",
+    "typeorm": "^0.3.16",
     "typescript": "^5.0.4"
   }
 }

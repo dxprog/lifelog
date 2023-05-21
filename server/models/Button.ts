@@ -1,34 +1,25 @@
-import {
-  DbModel,
-  tableName,
-  tableSchema,
-  ColumnTypes
-} from '../lib/DbModel';
+import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
+
 import { EventDataType } from './types';
 
 export interface IButton {
-  deviceId: string;
+  deviceMac: string;
   buttonIndex: number;
-  buttonDataType: EventDataType;
+  eventDataType: EventDataType;
 }
 
-@tableName('buttons')
-@tableSchema({
-  id: { name: 'buttonId', type: ColumnTypes.Number, primaryKey: true },
-  deviceId: { name: 'deviceId', type: ColumnTypes.String },
-  buttonIndex: { name: 'buttonIndex', type: ColumnTypes.Number },
-  buttonDataType: { name: 'buttonDataType', type: ColumnTypes.String },
-})
-export class Button extends DbModel implements IButton {
-  public deviceId: string;
+@Entity('buttons')
+export class Button extends BaseEntity implements IButton {
+  // the primary ID will be `${deviceId}_${buttonIndex}`
+  @PrimaryColumn({ type: 'int' })
+  public buttonId: string;
+
+  @Column({ type: 'varchar', length: 32, nullable: false })
+  public deviceMac: string;
+
+  @Column({ type: 'int8', nullable: false })
   public buttonIndex: number;
-  public buttonDataType: EventDataType;
 
-  constructor() {
-    super();
-  }
-
-  public static create() {
-    return new Button();
-  }
+  @Column({ type: 'varchar', length: 32, nullable: false })
+  public eventDataType: EventDataType;
 }
