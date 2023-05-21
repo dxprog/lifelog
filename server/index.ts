@@ -2,7 +2,6 @@ import * as express from 'express';
 import { DataSource } from 'typeorm';
 
 import config from '../config';
-import Db from './lib/Db';
 import initDeviceRoutes from './routes/devices';
 import initEventRoutes from './routes/events';
 
