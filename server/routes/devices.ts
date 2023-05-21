@@ -14,12 +14,12 @@ async function registerDevice(req: express.Request, res: express.Response) {
 
   // check to see if this device has already been registered
   let deviceObj = await Device.findOneBy({
-    deviceMac: req.body.deviceMac,
+    deviceId: req.body.deviceId,
   });
 
   if (!deviceObj) {
     deviceObj = new Device();
-    deviceObj.deviceMac = req.body.deviceMac;
+    deviceObj.deviceId = req.body.deviceMac;
     deviceObj.deviceName = 'New LifeLog Device';
     await deviceObj.save();
   }
