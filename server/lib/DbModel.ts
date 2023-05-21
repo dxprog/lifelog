@@ -184,10 +184,10 @@ export abstract class DbModel {
    * @param db The database connection
    * @return {boolean} If the operation was successful
    */
-  public async sync(): Promise<void> {
+  public async sync(forceInsert: boolean = false): Promise<void> {
     const constructor = <typeof DbModel>this.constructor;
 
-    if (constructor._dbPrimaryKey && !this[constructor._dbPrimaryKey]) {
+    if ((constructor._dbPrimaryKey && !this[constructor._dbPrimaryKey]) || forceInsert) {
       return this._insert();
     }
 

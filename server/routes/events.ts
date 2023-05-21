@@ -30,7 +30,7 @@ async function getEvents(req: express.Request, res: express.Response) {
 async function addEvent(req: express.Request, res: express.Response) {
   const event = Event.createFromObject({
     ...req.body,
-    eventDate: Date.now()
+    eventDate: Date.now(),
   });
 
   if (event) {

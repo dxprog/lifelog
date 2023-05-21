@@ -7,6 +7,7 @@ import {
 import { EventDataType } from './types';
 
 export interface IDevice {
+  id: string;
   deviceName: string;
 }
 
@@ -16,6 +17,7 @@ export interface IDevice {
   deviceName: { name: 'deviceName', type: ColumnTypes.String },
 })
 export class Device extends DbModel implements IDevice {
+  public id: string;
   public deviceName: string;
 
   constructor() {
