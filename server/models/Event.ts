@@ -4,7 +4,7 @@ import { EventDataType } from './types';
 
 export interface IEvent {
   eventId: number;
-  deviceMac: string;
+  deviceId: string;
   buttonIndex: number;
   eventDate: number;
   eventDataType: EventDataType;
@@ -17,7 +17,7 @@ export class Event extends BaseEntity implements IEvent {
   public eventId: number;
 
   @Column({ type: 'varchar', length: 32, nullable: false })
-  public deviceMac: string;
+  public deviceId: string;
 
   @Column({ type: 'int8', nullable: false })
   public buttonIndex: number;

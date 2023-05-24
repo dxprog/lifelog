@@ -35,7 +35,8 @@ async function addEvent(req: express.Request, res: express.Response) {
   let button: Button;
   try {
     button = await Button.findOneByOrFail({
-      buttonId: `${data?.deviceMac}_${data?.buttonIndex}`,
+      deviceId: data?.deviceId,
+      buttonIndex: data?.buttonIndex,
     });
   } catch (err: unknown) {
     res.status(404).send();
@@ -43,7 +44,7 @@ async function addEvent(req: express.Request, res: express.Response) {
   }
 
   event.buttonIndex = data?.buttonIndex;
-  event.deviceMac = data?.deviceMac;
+  event.deviceId = data?.deviceId;
   event.eventDate = Date.now();
   event.eventDataType = button.eventDataType;
 

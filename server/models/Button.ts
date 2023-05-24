@@ -1,9 +1,10 @@
-import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 import { EventDataType } from './types';
 
 export interface IButton {
-  deviceMac: string;
+  buttonId: number;
+  deviceId: string;
   buttonIndex: number;
   eventDataType: EventDataType;
 }
@@ -11,11 +12,11 @@ export interface IButton {
 @Entity('buttons')
 export class Button extends BaseEntity implements IButton {
   // the primary ID will be `${deviceId}_${buttonIndex}`
-  @PrimaryColumn({ type: 'int' })
-  public buttonId: string;
+  @PrimaryGeneratedColumn({ type: 'int' })
+  public buttonId: number;
 
   @Column({ type: 'varchar', length: 32, nullable: false })
-  public deviceMac: string;
+  public deviceId: string;
 
   @Column({ type: 'int8', nullable: false })
   public buttonIndex: number;

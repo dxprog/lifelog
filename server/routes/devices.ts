@@ -7,8 +7,8 @@ import { withErrorHandler } from './helpers';
  * Attempts to register a new device. This is called by the button device on bootup
  */
 async function registerDevice(req: express.Request, res: express.Response) {
-  if (!req.body?.deviceMac) {
-    res.status(400).send('"deviceMac" is required');
+  if (!req.body?.deviceId) {
+    res.status(400).send('"deviceId" is required');
     return;
   }
 
@@ -19,7 +19,7 @@ async function registerDevice(req: express.Request, res: express.Response) {
 
   if (!deviceObj) {
     deviceObj = new Device();
-    deviceObj.deviceId = req.body.deviceMac;
+    deviceObj.deviceId = req.body.deviceId;
     deviceObj.deviceName = 'New LifeLog Device';
     await deviceObj.save();
   }
