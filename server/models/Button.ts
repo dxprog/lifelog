@@ -7,6 +7,7 @@ export interface IButton {
   deviceId: string;
   buttonIndex: number;
   eventDataType: EventDataType;
+  buttonName: string;
 }
 
 @Entity('buttons')
@@ -23,4 +24,7 @@ export class Button extends BaseEntity implements IButton {
 
   @Column({ type: 'varchar', length: 32, nullable: false })
   public eventDataType: EventDataType;
+
+  @Column({ type: 'varchar', length: 100, nullable: false })
+  public buttonName: string;
 }

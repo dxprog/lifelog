@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm';
 import config from '../config';
 import initDeviceRoutes from './routes/devices';
 import initEventRoutes from './routes/events';
+import initButtonRoutes from './routes/buttons';
 
 import { Button, Device, Event } from './models';
 
@@ -25,5 +26,6 @@ app.listen(config.port, async () => {
   await dataSource.initialize();
   initDeviceRoutes(app);
   initEventRoutes(app);
+  initButtonRoutes(app);
   console.log(`Server started on port ${config.port}`);
 });

@@ -3,6 +3,7 @@ import * as express from 'express';
 import { Event, IEvent } from '../models/Event';
 import { withErrorHandler } from './helpers';
 import { Button } from '../models/Button';
+import { EventDataType } from '../models/types';
 
 // Default to one day's worth of observations (24 * 60 * 60 * 1000)
 const DEFAULT_OBSERVATION_SPAN = 86400000;
@@ -32,14 +33,30 @@ async function addEvent(req: express.Request, res: express.Response) {
   const data = req.body as IEvent;
   const event = new Event();
 
-  let button: Button;
-  try {
-    button = await Button.findOneByOrFail({
-      deviceId: data?.deviceId,
-      buttonIndex: data?.buttonIndex,
-    });
-  } catch (err: unknown) {
-    res.status(404).send();
+  let button = await Button.findOneBy({
+    deviceId: data?.deviceId,
+    buttonIndex: data?.buttonIndex,
+  });
+
+  // if a button wasn't found, it's new and needs to be registered
+  if (!button) {
+    button = new Button();
+    button.deviceId = data?.deviceId;
+    button.buttonIndex = data?.buttonIndex;
+    button.eventDataType = EventDataType.RegisterButton;
+    button.buttonName = `Button ${button.buttonIndex + 1}`;
+    try {
+      await button.save();
+      res.status(201).send();
+    } catch (err: unknown) {
+      res.status(500).send();
+    }
+    return;
+  }
+
+  // don't record an event for a button that doesn't have a type assigned
+  if (button.eventDataType === EventDataType.RegisterButton) {
+    res.send();
     return;
   }
 
@@ -48,57 +65,16 @@ async function addEvent(req: express.Request, res: express.Response) {
   event.eventDate = Date.now();
   event.eventDataType = button.eventDataType;
 
-  if (event) {
-    try {
-      await event.save();
-      res.json(event);
-    } catch (err) {
-      console.log('Error adding observation: ', err);
-      res.status(500).send();
-    }
-  } else {
-    res.status(400).send();
+  try {
+    await event.save();
+    res.json(event);
+  } catch (err: unknown) {
+    console.log('Error adding observation: ', err);
+    res.status(500).send();
   }
 }
-
-// /**
-//  * Records multiple observations and returns the database records
-//  */
-// async function addEvents(req: express.Request, res: express.Response) {
-//   try {
-//     if (!Array.isArray(req.body)) {
-//       res.status(400).send();
-//       return;
-//     }
-
-//     const events = req.body.map(item => {
-//       return Event.createFromObject({
-//         ...item,
-//         observationTime: Date.now(),
-//       });
-//     });
-
-//     try {
-//       const records = await Promise.all(events.map(async (event) => {
-//         if (event) {
-//           await event.sync();
-//         }
-//         return event;
-//       }));
-//       res.json(records);
-//     } catch (err) {
-//       console.error('There was an error syncing observations: ', err);
-//       res.status(500).send();
-//     }
-
-//   } catch (err) {
-//     console.error('Error parsing observation records: ', err);
-//     res.status(400).send();
-//   }
-// }
 
 export default function registerRoutes(app: express.Express) {
   app.get('/events', withErrorHandler(getEvents));
   app.post('/event', withErrorHandler(addEvent));
-  // app.post('/events', withErrorHandler(addEvents))
 }

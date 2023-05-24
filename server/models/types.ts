@@ -7,4 +7,5 @@ export enum EventDataType {
   BottleFeed = 'bottle_feed',
   BreastFeed = 'breast_feed',
   SolidFood = 'solid_food',
+  RegisterButton = 'register_button',
 }
