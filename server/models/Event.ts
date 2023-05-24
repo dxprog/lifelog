@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-import { EventDataType } from './types';
+import { EventDataType } from '@shared/EventDataTypes';
 
 export interface IEvent {
   eventId: number;

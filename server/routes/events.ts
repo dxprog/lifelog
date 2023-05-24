@@ -3,7 +3,7 @@ import * as express from 'express';
 import { Event, IEvent } from '../models/Event';
 import { withErrorHandler } from './helpers';
 import { Button } from '../models/Button';
-import { EventDataType } from '../models/types';
+import { EventDataType } from '@shared/EventDataTypes';
 
 // Default to one day's worth of observations (24 * 60 * 60 * 1000)
 const DEFAULT_OBSERVATION_SPAN = 86400000;
