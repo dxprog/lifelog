@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:server": "ts-node --project tsconfig.server.json server/index.ts",
-    "start:app": "webpack --mode development --watch",
+    "start:app": "webpack serve --mode development",
     "build": "rm -rf dist && webpack --mode production --progress",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -40,7 +40,8 @@
     "tsconfig-paths": "^4.2.0",
     "tsconfig-paths-webpack-plugin": "^4.0.1",
     "webpack": "^5.83.1",
-    "webpack-cli": "^5.1.1"
+    "webpack-cli": "^5.1.1",
+    "webpack-dev-server": "^4.15.0"
   },
   "dependencies": {
     "cors": "^2.8.5",

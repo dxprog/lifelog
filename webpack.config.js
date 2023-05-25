@@ -11,6 +11,21 @@ module.exports = (env, argv) => {
   return {
     entry: path.join(appPath, 'src/index.tsx'),
     devtool: 'inline-source-map',
+    devServer: {
+      historyApiFallback: {
+        index: '/',
+      },
+      https: true,
+      server: 'https',
+      static: {
+        directory: distPath
+      },
+      devMiddleware: {
+        writeToDisk: true,
+      },
+      liveReload: true,
+      open: true,
+    },
     module: {
       rules: [
         {
