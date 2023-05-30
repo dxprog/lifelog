@@ -1,14 +1,7 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+import { IButton } from '@shared/IButton';
 import { EventDataType } from '@shared/EventDataTypes';
-
-export interface IButton {
-  buttonId: number;
-  deviceId: string;
-  buttonIndex: number;
-  eventDataType: EventDataType;
-  buttonName: string;
-}
 
 @Entity('buttons')
 export class Button extends BaseEntity implements IButton {

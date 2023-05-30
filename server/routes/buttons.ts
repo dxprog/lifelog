@@ -1,7 +1,9 @@
 import * as express from 'express';
 
+import { IButton } from '@shared/IButton';
+
 import { withErrorHandler } from './helpers';
-import { Button, IButton } from '../models/Button';
+import { Button } from '../models/Button';
 
 async function updateButton(req: express.Request, res: express.Response) {
   const data = req.body as IButton;
@@ -18,6 +20,8 @@ async function updateButton(req: express.Request, res: express.Response) {
   button.buttonName = data?.buttonName ?? button.buttonName;
   button.eventDataType = data?.eventDataType ?? button.eventDataType;
   await button.save();
+
+  res.json(button);
 }
 
 async function getButtonsForDevice(req: express.Request, res: express.Response) {
