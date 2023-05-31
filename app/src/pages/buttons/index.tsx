@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { Spinner, Heading, Container, VStack, StackDivider } from '@chakra-ui/react';
 
 import { IButton } from '@shared/IButton';
 
-import { Button } from './components/Button';
+import { ButtonItem } from './components/Button';
 
 type ButtonsProps = {
   deviceId: string;
@@ -51,19 +52,19 @@ const Buttons = ({ deviceId }: ButtonsProps) => {
   }, [ buttons, setLoading, setReload ]);
 
   return (
-    <div>
-      <h1>Buttons</h1>
-      {loading && <h2>Loading...</h2>}
+    <Container>
+      <Heading>Buttons</Heading>
+      {loading && <Spinner color="purple.500" size="xl" />}
       {!loading && (
-        <ul>
+        <VStack divider={<StackDivider />}>
           {buttons.map(button => (
-            <li>
-              <Button button={button} updateButton={handleUpdateButton} />
-            </li>
+            <Container>
+              <ButtonItem button={button} updateButton={handleUpdateButton} />
+            </Container>
           ))}
-        </ul>
+        </VStack>
       )}
-    </div>
+    </Container>
   );
 };
 
