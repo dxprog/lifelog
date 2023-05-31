@@ -4,23 +4,22 @@ import { Event, IEvent } from '../models/Event';
 import { withErrorHandler } from './helpers';
 import { Button } from '../models/Button';
 import { EventDataType } from '@shared/EventDataTypes';
+import { Between, FindOptionsWhere } from 'typeorm';
 
 // Default to one day's worth of observations (24 * 60 * 60 * 1000)
 const DEFAULT_OBSERVATION_SPAN = 86400000;
 
 async function getEvents(req: express.Request, res: express.Response) {
-  const filters: Record<string, unknown> = {};
+  const filters: FindOptionsWhere<Event> = {};
+
+  const startTime = parseInt(req.query.startTime as string, 10) || Date.now() - DEFAULT_OBSERVATION_SPAN;
+  const endTime = parseInt(req.query.endTime as string, 10) || Date.now();
+  filters.eventDate = Between(startTime, endTime);
+  filters.deviceId = req.params.deviceId;
 
   if (req.query.eventDataType) {
-    filters.eventDataType = req.query.eventDataType;
+    filters.eventDataType = req.query.eventDataType as EventDataType;
   }
-
-  const startTime = req.query.startTime || Date.now() - DEFAULT_OBSERVATION_SPAN;
-  const endTime = req.query.endTime || Date.now();
-
-  filters.eventDate = {
-    between: [ startTime, endTime ],
-  };
 
   const retVal = await Event.findBy(filters);
   res.json(retVal);
@@ -69,12 +68,12 @@ async function addEvent(req: express.Request, res: express.Response) {
     await event.save();
     res.json(event);
   } catch (err: unknown) {
-    console.log('Error adding observation: ', err);
+    console.error('Error adding observation: ', err);
     res.status(500).send();
   }
 }
 
 export default function registerRoutes(app: express.Express) {
-  app.get('/events', withErrorHandler(getEvents));
+  app.get('/events/:deviceId', withErrorHandler(getEvents));
   app.post('/event', withErrorHandler(addEvent));
 }
