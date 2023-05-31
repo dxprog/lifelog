@@ -6,7 +6,7 @@ export const App = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<h1>Hey</h1>} />
-      <Route path="/buttons" element={<Buttons deviceId="2c02" />} />
+      <Route path="/buttons" element={<Buttons deviceId="28cdc109c02d" />} />
     </Routes>
   </BrowserRouter>
 );
