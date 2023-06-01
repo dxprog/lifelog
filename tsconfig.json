@@ -12,7 +12,7 @@
     "baseUrl": ".",
     "paths": {
       "@server/*": ["server/*"],
-      "@app/*": ["app/*"],
+      "@app/*": ["app/src/*"],
       "@shared/*": ["shared/*"]
     }
   },
