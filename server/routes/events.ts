@@ -4,7 +4,7 @@ import { Event, IEvent } from '../models/Event';
 import { withErrorHandler } from './helpers';
 import { Button } from '../models/Button';
 import { EventDataType } from '@shared/EventDataTypes';
-import { Between, FindOptionsWhere } from 'typeorm';
+import { Between, FindOptionsSelect, FindOptionsWhere } from 'typeorm';
 
 // Default to one day's worth of observations (24 * 60 * 60 * 1000)
 const DEFAULT_OBSERVATION_SPAN = 86400000;
@@ -21,7 +21,12 @@ async function getEvents(req: express.Request, res: express.Response) {
     filters.eventDataType = req.query.eventDataType as EventDataType;
   }
 
-  const retVal = await Event.findBy(filters);
+  const retVal = await Event.find({
+    where: filters,
+    order: {
+      eventDate: 'desc',
+    },
+  })
   res.json(retVal);
 }
 
