@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Heading } from '@chakra-ui/react';
 
+import EventIcon from '@app/components/EventIcon';
 import { useEvents } from '@app/hooks/useEvents';
 
 type IEventsPageProps = {
@@ -36,7 +37,10 @@ const EventsPage = ({ deviceId }: IEventsPageProps): React.ReactElement => {
             return (
               <>
                 {isNewDay && <li><strong>{date}</strong></li>}
-                <li>{event.eventDataType} - {timeFormatter.format(new Date(event.eventDate))}</li>
+                <li>
+                  <EventIcon eventDataType={event.eventDataType} />
+                  {event.eventDataType} - {timeFormatter.format(new Date(event.eventDate))}
+                </li>
               </>
             );
           })}
