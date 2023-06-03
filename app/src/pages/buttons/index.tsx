@@ -2,14 +2,12 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Spinner, Heading, Container, VStack, StackDivider } from '@chakra-ui/react';
 
 import { useButtons } from '@app/hooks/useButtons';
+import { useDevice } from '@app/hooks/useDevice';
 
 import { ButtonItem } from './components/Button';
 
-type ButtonsProps = {
-  deviceId: string;
-};
-
-const Buttons = ({ deviceId }: ButtonsProps) => {
+const Buttons = () => {
+  const deviceId = useDevice();
   const { buttons, isLoading, updateButton } = useButtons(deviceId);
 
   return (

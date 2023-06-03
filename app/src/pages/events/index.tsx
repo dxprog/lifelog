@@ -4,13 +4,12 @@ import { Badge, Box, Container, Divider, Flex, Heading, Highlight, Spacer, Text,
 import EventIcon from '@app/components/EventIcon';
 import { useEvents } from '@app/hooks/useEvents';
 import { useButtons } from '@app/hooks/useButtons';
+import { useDevice } from '@app/hooks/useDevice';
 import { EventToggle, ToggleEventDataTypes } from '@shared/EventDataTypes';
 
-type IEventsPageProps = {
-  deviceId: string;
-};
 
-const EventsPage = ({ deviceId }: IEventsPageProps): React.ReactElement => {
+const EventsPage = (): React.ReactElement => {
+  const deviceId = useDevice();
   const { events, isLoading: eventsLoading, hasError } = useEvents(deviceId);
   const { buttons, isLoading: buttonsLoading } = useButtons(deviceId);
   const isLoading = useMemo(

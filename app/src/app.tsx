@@ -4,15 +4,18 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Buttons from './pages/buttons';
 import EventsPage from './pages/events';
+import { DeviceContextProvider } from './hooks/useDevice';
 
 export const App = () => (
   <ChakraProvider>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<h1>Hey</h1>} />
-        <Route path="/buttons" element={<Buttons deviceId="28cdc109c02d" />} />
-        <Route path="/events" element={<EventsPage deviceId="28cdc109c02d" />} />
-      </Routes>
+      <DeviceContextProvider value="28cdc109c02d">
+        <Routes>
+          <Route path="/" element={<h1>Hey</h1>} />
+          <Route path="/buttons" element={<Buttons />} />
+          <Route path="/events" element={<EventsPage />} />
+        </Routes>
+      </DeviceContextProvider>
     </BrowserRouter>
   </ChakraProvider>
 );
