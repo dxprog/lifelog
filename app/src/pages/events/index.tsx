@@ -1,15 +1,22 @@
-import React from 'react';
-import { Container, Heading } from '@chakra-ui/react';
+import React, { useMemo } from 'react';
+import { Box, Container, Divider, Flex, Heading, Highlight, Spacer, Text, VStack } from '@chakra-ui/react';
 
 import EventIcon from '@app/components/EventIcon';
 import { useEvents } from '@app/hooks/useEvents';
+import { useButtons } from '@app/hooks/useButtons';
 
 type IEventsPageProps = {
   deviceId: string;
 };
 
 const EventsPage = ({ deviceId }: IEventsPageProps): React.ReactElement => {
-  const { events, isLoading, hasError } = useEvents(deviceId);
+  const { events, isLoading: eventsLoading, hasError } = useEvents(deviceId);
+  const { buttons, isLoading: buttonsLoading } = useButtons(deviceId);
+  const isLoading = useMemo(
+    () => eventsLoading || buttonsLoading,
+    [ eventsLoading, buttonsLoading ]
+  );
+
   const dateFormatter = Intl.DateTimeFormat('en-US', {
     dateStyle: 'medium',
   });
@@ -26,7 +33,7 @@ const EventsPage = ({ deviceId }: IEventsPageProps): React.ReactElement => {
         Event Stream
       </Heading>
       {!isLoading && events && (
-        <ul>
+        <VStack divider={<Divider />}>
           {events.map(event => {
             const dateStamp = new Date(event.eventDate);
             const date = dateFormatter.format(dateStamp);
@@ -36,15 +43,27 @@ const EventsPage = ({ deviceId }: IEventsPageProps): React.ReactElement => {
 
             return (
               <>
-                {isNewDay && <li><strong>{date}</strong></li>}
-                <li>
-                  <EventIcon eventDataType={event.eventDataType} />
-                  {event.eventDataType} - {timeFormatter.format(new Date(event.eventDate))}
-                </li>
+                {isNewDay && (
+                  <Container>
+                    <Heading size="lg">{date}</Heading>
+                  </Container>
+                )}
+                <Container>
+                  <Flex align="center">
+                    <EventIcon eventDataType={event.eventDataType} />
+                    <Text fontSize="xl" pl={2}>
+                      {event.eventDataType}
+                    </Text>
+                    <Spacer />
+                    <Text>
+                      {timeFormatter.format(new Date(event.eventDate))}
+                    </Text>
+                  </Flex>
+                </Container>
               </>
             );
           })}
-        </ul>
+        </VStack>
       )}
     </Container>
   )
