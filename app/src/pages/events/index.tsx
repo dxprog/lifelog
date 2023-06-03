@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
-import { Box, Container, Divider, Flex, Heading, Highlight, Spacer, Text, VStack } from '@chakra-ui/react';
+import { Badge, Box, Container, Divider, Flex, Heading, Highlight, Spacer, Text, VStack } from '@chakra-ui/react';
 
 import EventIcon from '@app/components/EventIcon';
 import { useEvents } from '@app/hooks/useEvents';
 import { useButtons } from '@app/hooks/useButtons';
+import { EventToggle, ToggleEventDataTypes } from '@shared/EventDataTypes';
 
 type IEventsPageProps = {
   deviceId: string;
@@ -38,6 +39,8 @@ const EventsPage = ({ deviceId }: IEventsPageProps): React.ReactElement => {
             const dateStamp = new Date(event.eventDate);
             const date = dateFormatter.format(dateStamp);
             const isNewDay = date !== lastDate;
+            const isToggleEvent = ToggleEventDataTypes.includes(event.eventDataType);
+            const toggleStarted = isToggleEvent && event.eventValue !== EventToggle.Stop;
 
             lastDate = date;
 
@@ -55,7 +58,12 @@ const EventsPage = ({ deviceId }: IEventsPageProps): React.ReactElement => {
                       {event.eventDataType}
                     </Text>
                     <Spacer />
-                    <Text>
+                    {isToggleEvent && (
+                      <Badge colorScheme={toggleStarted ? 'green' : 'red'}>
+                        {toggleStarted ? 'Started' : 'Stopped'}
+                      </Badge>
+                    )}
+                    <Text pl={2}>
                       {timeFormatter.format(new Date(event.eventDate))}
                     </Text>
                   </Flex>
