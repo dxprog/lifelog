@@ -9,3 +9,15 @@ export enum EventDataType {
   SolidFood = 'solid_food',
   RegisterButton = 'register_button',
 }
+
+export const ToggleEventDataTypes: EventDataType[] = [
+  EventDataType.SleepToggle,
+  EventDataType.BottleFeed,
+  EventDataType.BreastFeed,
+  EventDataType.Pumping,
+];
+
+export enum EventToggle {
+  Start = 'start',
+  Stop = 'stop'
+};

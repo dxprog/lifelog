@@ -3,7 +3,7 @@ import * as express from 'express';
 import { Event, IEvent } from '../models/Event';
 import { withErrorHandler } from './helpers';
 import { Button } from '../models/Button';
-import { EventDataType } from '@shared/EventDataTypes';
+import { EventDataType, EventToggle, ToggleEventDataTypes } from '@shared/EventDataTypes';
 import { Between, FindOptionsSelect, FindOptionsWhere } from 'typeorm';
 
 // Default to one day's worth of observations (24 * 60 * 60 * 1000)
@@ -68,6 +68,21 @@ async function addEvent(req: express.Request, res: express.Response) {
   event.deviceId = data?.deviceId;
   event.eventDate = Date.now();
   event.eventDataType = button.eventDataType;
+
+  // if this is a toggle data type, then we need to know if this is an "start" or "stop" event
+  if (ToggleEventDataTypes.includes(event.eventDataType)) {
+    const lastToggleEvent = await Event.findOneBy({
+      eventDataType: event.eventDataType,
+      deviceId: event.deviceId,
+      buttonIndex: event.buttonIndex,
+    });
+
+    if (!lastToggleEvent || lastToggleEvent.eventValue !== EventToggle.Start) {
+      event.eventValue = EventToggle.Start;
+    } else {
+      event.eventValue = EventToggle.Stop;
+    }
+  }
 
   try {
     await event.save();
