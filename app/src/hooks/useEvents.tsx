@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { IEvent } from '@server/models/Event';
 
-export function useEvents(deviceId: string) {
+export function useEvents(deviceId: string, startDate?: Date | undefined, endDate?: Date | undefined) {
   const [ events, setEvents ] = useState<IEvent[] | null>(null);
   const [ isLoading, setIsLoading ] = useState(false);
   const [ hasError, setHasError ] = useState(false);
@@ -15,7 +15,16 @@ export function useEvents(deviceId: string) {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`//api.babylog.net/events/${deviceId}`);
+      const startTime = startDate?.getTime();
+      const endTime = endDate?.getTime();
+      const params = new URLSearchParams({
+        startTime: `${startTime}`,
+        endTime: `${endTime}`
+      });
+      const queryStr = params.toString();
+      const response = await fetch(
+        `//api.babylog.net/events/${deviceId}${queryStr ? '?' + queryStr : ''}`
+      );
       const data = await response.json() as IEvent[];
       setEvents(data);
       setHasError(false);
@@ -25,7 +34,7 @@ export function useEvents(deviceId: string) {
     }
 
     setIsLoading(false);
-  }, [ events, isLoading, hasError ]);
+  }, [ events, isLoading, hasError, startDate, endDate ]);
 
   return {
     events,
