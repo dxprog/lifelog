@@ -11,7 +11,7 @@ import { EventToggle, ToggleEventDataTypes } from '@shared/EventDataTypes';
 const EventsPage = (): React.ReactElement => {
   const deviceId = useDevice();
   const { events, isLoading: eventsLoading, hasError } = useEvents(deviceId);
-  const { buttons, isLoading: buttonsLoading } = useButtons(deviceId);
+  const { buttonLabels, isLoading: buttonsLoading } = useButtons(deviceId);
   const isLoading = useMemo(
     () => eventsLoading || buttonsLoading,
     [ eventsLoading, buttonsLoading ]
@@ -54,7 +54,7 @@ const EventsPage = (): React.ReactElement => {
                   <Flex align="center">
                     <EventIcon eventDataType={event.eventDataType} />
                     <Text fontSize="xl" pl={2}>
-                      {event.eventDataType}
+                      {buttonLabels[event.eventDataType]}
                     </Text>
                     <Spacer />
                     {isToggleEvent && (
