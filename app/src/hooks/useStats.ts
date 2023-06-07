@@ -17,7 +17,7 @@ type EventStats = EventStat[];
 
 export function useStats(deviceId: string) {
   const now = new Date();
-  const startDate = new Date(`${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate() - 2}`);
+  const startDate = new Date(`${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`);
   const endDate = new Date(startDate.getTime() + SevenDaysInMilliseconds)
   const { isLoading, events, hasError } = useEvents(deviceId, startDate, endDate);
 
@@ -71,6 +71,8 @@ export function useStats(deviceId: string) {
   }, [ isLoading, hasError, events ]);
 
   return {
+    startDate,
+    endDate,
     isLoading,
     hasError,
     rollupStats,

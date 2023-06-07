@@ -6,6 +6,7 @@ import { Box, Card, CardBody, CardHeader, Container, Heading, Spinner, Stack, St
 import EventIcon from '@app/components/EventIcon';
 import { IconSize } from '@app/components/EventIcon';
 import { useButtons } from '@app/hooks/useButtons';
+import { useDateFormatter } from '@app/hooks/useDateFormatter';
 
 function formatDuration(duration: number) {
   let durationInSeconds = duration / 1000;
@@ -26,7 +27,13 @@ function formatDuration(duration: number) {
 
 const StatsPage = (): React.ReactElement => {
   const deviceId = useDevice();
-  const { isLoading: isStatsLoading, hasError: hasStatsError, rollupStats } = useStats(deviceId);
+  const {
+    isLoading: isStatsLoading,
+    hasError: hasStatsError,
+    rollupStats,
+    startDate,
+  } = useStats(deviceId);
+  const { formatMediumDate } = useDateFormatter();
   const { isLoading: isButtonsLoading, hasError: hasButtonsError, buttonLabels } = useButtons(deviceId);
   const isLoading = useMemo(() => isStatsLoading || isButtonsLoading, [ isStatsLoading, isButtonsLoading ]);
   const hasError = useMemo(() => hasStatsError || hasButtonsError, [ hasStatsError, hasButtonsError ]);
@@ -34,6 +41,7 @@ const StatsPage = (): React.ReactElement => {
   return (
     <Container>
       <Heading>Stats</Heading>
+      <Heading size="lg" as="h3">{formatMediumDate(startDate)}</Heading>
       {isLoading && <Spinner color="purple.500" size="xl" />}
       {!isLoading && !hasError && rollupStats.map(stat => (
         <Card direction="row" mb={3} alignItems="center">
