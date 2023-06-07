@@ -52,8 +52,11 @@ const StatsPage = (): React.ReactElement => {
             <CardBody>
               <Stat>
                 <StatLabel>{buttonLabels[stat.eventDataType]}</StatLabel>
-                <StatNumber>{stat.count}</StatNumber>
-                {stat.duration && <StatHelpText>{formatDuration(stat.duration)}</StatHelpText>}
+                <StatNumber>
+                  {stat.duration && (formatDuration(stat.duration))}
+                  {!stat.duration && stat.count}
+                </StatNumber>
+                {stat.duration && <StatHelpText>{`${stat.count} time${stat.count !== 1 ? 's' : ''}`}</StatHelpText>}
               </Stat>
             </CardBody>
           </Stack>

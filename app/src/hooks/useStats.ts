@@ -18,7 +18,7 @@ type EventStats = EventStat[];
 export function useStats(deviceId: string) {
   const now = new Date();
   const startDate = new Date(`${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`);
-  const endDate = new Date(startDate.getTime() + SevenDaysInMilliseconds)
+  const endDate = new Date(startDate.getTime() + OneDayInMilliseconds)
   const { isLoading, events, hasError } = useEvents(deviceId, startDate, endDate);
 
   const rollupStats = useMemo<EventStats>(() => {
