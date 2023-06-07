@@ -1,11 +1,15 @@
 import { useCallback, useMemo, useState } from "react";
 
 import { IButton } from '@shared/IButton';
+import { EventDataType } from "@shared/EventDataTypes";
+
+type ButtonLabelMap = Partial<Record<EventDataType, string>>;
 
 export function useButtons(deviceId: string) {
   const [ isLoading, setIsLoading ] = useState(false);
   const [ hasError, setHasError ] = useState(false);
   const [ buttons, setButtons ] = useState<IButton[] | null>(null);
+  const [ buttonLabels, setButtonLabels ] = useState<ButtonLabelMap>({});
 
   useMemo(async () => {
     if (isLoading || hasError || buttons) {
@@ -19,6 +23,12 @@ export function useButtons(deviceId: string) {
       const data = await response.json() as IButton[];
       setButtons(data);
       setHasError(false);
+
+      // calculate labels
+      setButtonLabels(data.reduce<ButtonLabelMap>((acc, button) => {
+        acc[button.eventDataType] = button.buttonName;
+        return acc;
+      }, {}));
     } catch (err) {
       setHasError(true);
       console.error(err);
@@ -48,6 +58,7 @@ export function useButtons(deviceId: string) {
     buttons: buttons ?? [],
     isLoading,
     hasError,
+    buttonLabels,
     updateButton,
   }
 }
