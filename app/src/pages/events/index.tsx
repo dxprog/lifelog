@@ -1,29 +1,22 @@
 import React, { useMemo } from 'react';
-import { Badge, Box, Container, Divider, Flex, Heading, Highlight, Spacer, Text, VStack } from '@chakra-ui/react';
+import { Badge, Container, Divider, Flex, Heading, Spacer, Text, VStack } from '@chakra-ui/react';
 
 import EventIcon from '@app/components/EventIcon';
 import { useEvents } from '@app/hooks/useEvents';
 import { useButtons } from '@app/hooks/useButtons';
 import { useDevice } from '@app/hooks/useDevice';
+import { useDateFormatter } from '@app/hooks/useDateFormatter';
 import { EventToggle, ToggleEventDataTypes } from '@shared/EventDataTypes';
-
 
 const EventsPage = (): React.ReactElement => {
   const deviceId = useDevice();
   const { events, isLoading: eventsLoading, hasError } = useEvents(deviceId);
   const { buttonLabels, isLoading: buttonsLoading } = useButtons(deviceId);
+  const { formatMediumDate, formatShortTime } = useDateFormatter();
   const isLoading = useMemo(
     () => eventsLoading || buttonsLoading,
     [ eventsLoading, buttonsLoading ]
   );
-
-  const dateFormatter = Intl.DateTimeFormat('en-US', {
-    dateStyle: 'medium',
-  });
-  const timeFormatter = Intl.DateTimeFormat('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-  });
 
   let lastDate: string = '';
 
@@ -35,8 +28,7 @@ const EventsPage = (): React.ReactElement => {
       {!isLoading && events && (
         <VStack divider={<Divider />}>
           {events.map(event => {
-            const dateStamp = new Date(event.eventDate);
-            const date = dateFormatter.format(dateStamp);
+            const date = formatMediumDate(event.eventDate);
             const isNewDay = date !== lastDate;
             const isToggleEvent = ToggleEventDataTypes.includes(event.eventDataType);
             const toggleStarted = isToggleEvent && event.eventValue !== EventToggle.Stop;
@@ -63,7 +55,7 @@ const EventsPage = (): React.ReactElement => {
                       </Badge>
                     )}
                     <Text pl={2}>
-                      {timeFormatter.format(new Date(event.eventDate))}
+                      {formatShortTime(event.eventDate)}
                     </Text>
                   </Flex>
                 </Container>
