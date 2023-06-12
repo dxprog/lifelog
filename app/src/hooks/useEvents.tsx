@@ -6,17 +6,20 @@ export function useEvents(deviceId: string, startDate?: Date | undefined, endDat
   const [ events, setEvents ] = useState<IEvent[] | null>(null);
   const [ isLoading, setIsLoading ] = useState(false);
   const [ hasError, setHasError ] = useState(false);
+  const [ dateCacheStamp, setDateCacheStamp ] = useState('');
 
   useMemo(async () => {
-    if (isLoading || hasError || events) {
+    const startTime = startDate?.getTime();
+    const endTime = endDate?.getTime();
+    const cacheStamp = `${startTime}-${endTime}`;
+
+    if (isLoading || hasError || (events && cacheStamp === dateCacheStamp)) {
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const startTime = startDate?.getTime();
-      const endTime = endDate?.getTime();
       const params = new URLSearchParams({
         startTime: `${startTime}`,
         endTime: `${endTime}`
@@ -34,7 +37,8 @@ export function useEvents(deviceId: string, startDate?: Date | undefined, endDat
     }
 
     setIsLoading(false);
-  }, [ events, isLoading, hasError, startDate, endDate ]);
+    setDateCacheStamp(cacheStamp);
+  }, [ events, isLoading, hasError, startDate, endDate, dateCacheStamp ]);
 
   return {
     events,

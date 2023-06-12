@@ -1,11 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useEvents } from './useEvents';
 import { EventDataType, EventToggle, ToggleEventDataTypes } from '@shared/EventDataTypes';
 import { IEvent } from '@server/models/Event';
-
-const OneDayInMilliseconds = 86400000;
-const SevenDaysInMilliseconds = OneDayInMilliseconds * 7;
-const ThirtyDaysInMilliseconds = OneDayInMilliseconds * 30;
 
 type EventRollup = Partial<Record<EventDataType, IEvent[]>>;
 type EventStat = {
@@ -15,10 +11,8 @@ type EventStat = {
 };
 type EventStats = EventStat[];
 
-export function useStats(deviceId: string) {
+export function useStats(deviceId: string, startDate: Date, endDate: Date) {
   const now = new Date();
-  const startDate = new Date(`${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`);
-  const endDate = new Date(startDate.getTime() + OneDayInMilliseconds)
   const { isLoading, events, hasError } = useEvents(deviceId, startDate, endDate);
 
   const rollupStats = useMemo<EventStats>(() => {
