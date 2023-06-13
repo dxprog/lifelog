@@ -1,9 +1,7 @@
 import { useDateFormatter } from '@app/hooks/useDateFormatter';
-import { Button } from '@mui/material';
+import { Button, Dialog } from '@mui/material';
+import { DateCalendar } from '@mui/x-date-pickers';
 import React, { useCallback, useState } from 'react';
-import DatePicker from 'react-datepicker';
-
-import 'react-datepicker/dist/react-datepicker.css';
 
 type DateHeaderProps = {
   selectedDate: Date;
@@ -14,24 +12,27 @@ const DateHeader = ({ selectedDate, onDateChange }: DateHeaderProps) => {
   const [ showDatePicker, setShowDatePicker ] = useState(false);
   const { formatMediumDate } = useDateFormatter();
 
-  const handleDateChange = useCallback((newDate: Date) => {
+  const handleDateChange = useCallback((newDate: any) => {
     setShowDatePicker(false);
-    onDateChange(newDate);
+    if (newDate && newDate.$d) {
+      onDateChange(newDate.$d);
+    }
   }, [ onDateChange, setShowDatePicker ]);
 
   return (
     <>
-      <Button onClick={() => setShowDatePicker(true)} variant="outlined">
+      <Button
+        onClick={() => setShowDatePicker(!showDatePicker)}
+        variant="outlined"
+        fullWidth
+      >
         {formatMediumDate(selectedDate)}
       </Button>
-      {showDatePicker && (
-        <DatePicker
-          selected={selectedDate}
+      <Dialog open={showDatePicker} onClose={() => setShowDatePicker(false)}>
+        <DateCalendar
           onChange={handleDateChange}
-          withPortal
-          inline
         />
-      )}
+      </Dialog>
     </>
   );
 }

@@ -6,7 +6,7 @@ import EventIcon, { IconSize } from '@app/components/EventIcon';
 import DateHeader from '@app/components/DateHeader';
 import { useButtons } from '@app/hooks/useButtons';
 import { TimeInMs } from '@shared/DateHelpers';
-import { Card, CardContent, CardHeader, CardMedia, CircularProgress, Container, Divider, Stack, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, CardMedia, CircularProgress, Container, Divider, Stack, Typography } from '@mui/material';
 
 function formatDuration(duration: number) {
   let durationInSeconds = duration / 1000;
@@ -42,46 +42,56 @@ const StatsPage = (): React.ReactElement => {
   const hasError = useMemo(() => hasStatsError || hasButtonsError, [ hasStatsError, hasButtonsError ]);
 
   const handleDateChange = useCallback((newDate: Date) => {
-    console.log(startDate, newDate);
     setStartDate(newDate);
   }, []);
 
   return (
     <Container>
-      <Typography variant="h6" component="h2">Stats</Typography>
-      {/* <Heading size="lg" as="h3">{formatMediumDate(startDate)}</Heading> */}
-      <DateHeader selectedDate={startDate} onDateChange={handleDateChange} />
-      {isLoading && <CircularProgress />}
-      {!isLoading && !hasError && (
-        <Stack spacing={2}>
-          {rollupStats.map(stat => {
-            const countLabel = `${stat.count} time${stat.count !== 1 ? 's' : ''}`;
-            return (
-              <Card>
-                <CardHeader>
-                  <EventIcon eventDataType={stat.eventDataType} size={IconSize.Large} />
-                </CardHeader>
-                <CardContent>
-                  <Typography variant="h5" gutterBottom>
-                    {buttonLabels[stat.eventDataType]}
-                  </Typography>
-                  <Stack
-                    direction="row"
-                    divider={<Divider orientation="vertical" flexItem />}
-                    spacing={2}
-                  >
-                    <Typography variant="body2">
-                      {stat.duration && (formatDuration(stat.duration))}
-                      {!stat.duration && countLabel}
+      <Stack spacing={2}>
+        <Typography variant="h6" component="h2">Stats</Typography>
+        {/* <Heading size="lg" as="h3">{formatMediumDate(startDate)}</Heading> */}
+        <DateHeader selectedDate={startDate} onDateChange={handleDateChange} />
+        {isLoading && <CircularProgress />}
+        {!isLoading && !hasError && (
+          <Stack spacing={2}>
+            {rollupStats.map(stat => {
+              const countLabel = `${stat.count} time${stat.count !== 1 ? 's' : ''}`;
+              return (
+                <Card>
+                  <CardMedia>
+                    <Box
+                      sx={{
+                        backgroundColor: 'primary.light',
+                        paddingTop: '32px',
+                        paddingBottom: '32px',
+                        textAlign: 'center',
+                      }}
+                    >
+                      <EventIcon eventDataType={stat.eventDataType} size={IconSize.XLarge} />
+                    </Box>
+                  </CardMedia>
+                  <CardContent>
+                    <Typography variant="h5" gutterBottom>
+                      {buttonLabels[stat.eventDataType]}
                     </Typography>
-                    {stat.duration && <Typography variant="body2">{countLabel}</Typography>}
-                  </Stack>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </Stack>
-      )}
+                    <Stack
+                      direction="row"
+                      divider={<Divider orientation="vertical" flexItem />}
+                      spacing={2}
+                    >
+                      <Typography variant="body2">
+                        {stat.duration && (formatDuration(stat.duration))}
+                        {!stat.duration && countLabel}
+                      </Typography>
+                      {stat.duration && <Typography variant="body2">{countLabel}</Typography>}
+                    </Stack>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </Stack>
+        )}
+      </Stack>
     </Container>
   );
 };

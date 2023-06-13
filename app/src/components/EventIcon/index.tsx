@@ -9,6 +9,8 @@ export enum IconSize {
   Small = 'sm',
   Medium = 'md',
   Large = 'lg',
+  XLarge = 'xl',
+  XXLarge = 'xxl',
 };
 
 type EventIconProps = {
