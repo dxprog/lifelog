@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { Spinner, Heading, Container, VStack, StackDivider } from '@chakra-ui/react';
+import React from 'react';
+import { CircularProgress, Container, Divider, Stack, Typography } from '@mui/material';
 
 import { useButtons } from '@app/hooks/useButtons';
 import { useDevice } from '@app/hooks/useDevice';
@@ -12,16 +12,16 @@ const Buttons = () => {
 
   return (
     <Container>
-      <Heading>Buttons</Heading>
-      {isLoading && <Spinner color="purple.500" size="xl" />}
+      <Typography variant="h6" component="h2">Buttons</Typography>
+      {isLoading && <CircularProgress />}
       {!isLoading && buttons && (
-        <VStack divider={<StackDivider />}>
+        <Stack divider={<Divider />}>
           {buttons.map(button => (
             <Container>
               <ButtonItem button={button} updateButton={updateButton} />
             </Container>
           ))}
-        </VStack>
+        </Stack>
       )}
     </Container>
   );

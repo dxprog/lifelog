@@ -1,15 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import {
-  Button,
-  ButtonGroup,
-  Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  Select,
-  Spacer,
-  Text,
-} from '@chakra-ui/react';
+import { Button, Container, Divider, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 
 import { EventDataType } from '@shared/EventDataTypes';
 import { IButton } from '@shared/IButton';
@@ -36,6 +26,7 @@ export const ButtonItem = ({ button, updateButton }: ButtonProps): React.ReactEl
 
   const handleSaveClick = useCallback(() => {
     setIsEditing(false);
+    console.log(buttonNameRef.current?.value);
     updateButton({
       ...button,
       buttonName: buttonNameRef.current?.value,
@@ -46,46 +37,42 @@ export const ButtonItem = ({ button, updateButton }: ButtonProps): React.ReactEl
   return (
     <div className="button">
       {!isEditing && (
-        <Flex gap="2">
-          <Text fontSize="xl">
+        <Stack direction="row">
+          <Typography variant="body1">
             {button.buttonName}
-          </Text>
-          <Spacer />
+          </Typography>
           <Button onClick={() => setIsEditing(true)}>
             Edit
           </Button>
-        </Flex>
+        </Stack>
       )}
       {isEditing && (
-        <>
-          <FormControl isRequired>
-            <FormLabel>Button Name</FormLabel>
-            <Input type="text" ref={buttonNameRef} defaultValue={`${button.buttonName}`} />
-          </FormControl>
-          <FormControl isRequired>
-            <FormLabel>
+        <Stack spacing={2}>
+          <TextField label="Button Name" type="text" inputRef={buttonNameRef} defaultValue={`${button.buttonName}`} />
+          <FormControl>
+            <InputLabel>
               Tracking Feature
-            </FormLabel>
-            <Select name="eventDataType" ref={eventDataTypeRef}>
-              <option value={EventDataType.RegisterButton} disabled selected={EventDataType.RegisterButton === button.eventDataType}>
+            </InputLabel>
+            <Select name="eventDataType" inputRef={eventDataTypeRef} value={button.eventDataType}>
+              <MenuItem value={EventDataType.RegisterButton} disabled selected={EventDataType.RegisterButton === button.eventDataType}>
                 Choose...
-              </option>
+              </MenuItem>
               {EventDataTypeLabels.map(([ eventDataType, label ]) => (
-                <option value={eventDataType} selected={button.eventDataType === eventDataType}>
+                <MenuItem value={eventDataType} selected={button.eventDataType === eventDataType}>
                   {label}
-                </option>
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
-          <ButtonGroup>
-            <Button onClick={handleSaveClick} type="submit" colorScheme="purple">
+          <Stack direction="row" spacing={2}>
+            <Button onClick={handleSaveClick} type="submit" variant="contained">
               Update
             </Button>
-            <Button onClick={() => setIsEditing(false)}>
+            <Button onClick={() => setIsEditing(false)} variant="outlined">
               Cancel
             </Button>
-          </ButtonGroup>
-        </>
+          </Stack>
+        </Stack>
       )}
     </div>
   )

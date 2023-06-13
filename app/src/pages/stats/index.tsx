@@ -2,12 +2,11 @@ import React, { useCallback, useMemo, useState } from 'react';
 
 import { useDevice } from '@app/hooks/useDevice';
 import { useStats } from '@app/hooks/useStats';
-import { Card, CardBody, CardHeader, Container, Heading, Spinner, Stack, Stat, StatHelpText, StatLabel, StatNumber } from '@chakra-ui/react';
 import EventIcon, { IconSize } from '@app/components/EventIcon';
 import DateHeader from '@app/components/DateHeader';
 import { useButtons } from '@app/hooks/useButtons';
-import { useDateFormatter } from '@app/hooks/useDateFormatter';
 import { TimeInMs } from '@shared/DateHelpers';
+import { Card, CardContent, CardHeader, CardMedia, CircularProgress, Container, Divider, Stack, Typography } from '@mui/material';
 
 function formatDuration(duration: number) {
   let durationInSeconds = duration / 1000;
@@ -49,29 +48,40 @@ const StatsPage = (): React.ReactElement => {
 
   return (
     <Container>
-      <Heading>Stats</Heading>
+      <Typography variant="h6" component="h2">Stats</Typography>
       {/* <Heading size="lg" as="h3">{formatMediumDate(startDate)}</Heading> */}
       <DateHeader selectedDate={startDate} onDateChange={handleDateChange} />
-      {isLoading && <Spinner color="purple.500" size="xl" />}
-      {!isLoading && !hasError && rollupStats.map(stat => (
-        <Card direction="row" mb={3} alignItems="center">
-          <CardHeader>
-            <EventIcon eventDataType={stat.eventDataType} size={IconSize.Large} />
-          </CardHeader>
-          <Stack>
-            <CardBody>
-              <Stat>
-                <StatLabel>{buttonLabels[stat.eventDataType]}</StatLabel>
-                <StatNumber>
-                  {stat.duration && (formatDuration(stat.duration))}
-                  {!stat.duration && stat.count}
-                </StatNumber>
-                {stat.duration && <StatHelpText>{`${stat.count} time${stat.count !== 1 ? 's' : ''}`}</StatHelpText>}
-              </Stat>
-            </CardBody>
-          </Stack>
-        </Card>
-      ))}
+      {isLoading && <CircularProgress />}
+      {!isLoading && !hasError && (
+        <Stack spacing={2}>
+          {rollupStats.map(stat => {
+            const countLabel = `${stat.count} time${stat.count !== 1 ? 's' : ''}`;
+            return (
+              <Card>
+                <CardHeader>
+                  <EventIcon eventDataType={stat.eventDataType} size={IconSize.Large} />
+                </CardHeader>
+                <CardContent>
+                  <Typography variant="h5" gutterBottom>
+                    {buttonLabels[stat.eventDataType]}
+                  </Typography>
+                  <Stack
+                    direction="row"
+                    divider={<Divider orientation="vertical" flexItem />}
+                    spacing={2}
+                  >
+                    <Typography variant="body2">
+                      {stat.duration && (formatDuration(stat.duration))}
+                      {!stat.duration && countLabel}
+                    </Typography>
+                    {stat.duration && <Typography variant="body2">{countLabel}</Typography>}
+                  </Stack>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </Stack>
+      )}
     </Container>
   );
 };

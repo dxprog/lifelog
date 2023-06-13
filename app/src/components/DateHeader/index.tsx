@@ -1,5 +1,5 @@
 import { useDateFormatter } from '@app/hooks/useDateFormatter';
-import { Button } from '@chakra-ui/react';
+import { Button } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import DatePicker from 'react-datepicker';
 
@@ -21,7 +21,7 @@ const DateHeader = ({ selectedDate, onDateChange }: DateHeaderProps) => {
 
   return (
     <>
-      <Button mt={2} mb={2} colorScheme="purple" onClick={() => setShowDatePicker(true)}>
+      <Button onClick={() => setShowDatePicker(true)} variant="outlined">
         {formatMediumDate(selectedDate)}
       </Button>
       {showDatePicker && (

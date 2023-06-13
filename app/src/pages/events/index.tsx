@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import { Badge, Container, Divider, Flex, Heading, Spacer, Text, VStack } from '@chakra-ui/react';
+import { Avatar, Badge, Container, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, ListSubheader, Typography } from '@mui/material';
 
-import EventIcon from '@app/components/EventIcon';
+import EventIcon, { IconSize } from '@app/components/EventIcon';
 import { useEvents } from '@app/hooks/useEvents';
 import { useButtons } from '@app/hooks/useButtons';
 import { useDevice } from '@app/hooks/useDevice';
@@ -10,7 +10,7 @@ import { EventToggle, ToggleEventDataTypes } from '@shared/EventDataTypes';
 
 const EventsPage = (): React.ReactElement => {
   const deviceId = useDevice();
-  const { events, isLoading: eventsLoading, hasError } = useEvents(deviceId);
+  const { events, isLoading: eventsLoading } = useEvents(deviceId);
   const { buttonLabels, isLoading: buttonsLoading } = useButtons(deviceId);
   const { formatMediumDate, formatShortTime } = useDateFormatter();
   const isLoading = useMemo(
@@ -22,47 +22,48 @@ const EventsPage = (): React.ReactElement => {
 
   return (
     <Container>
-      <Heading>
+      <Typography variant="h6" component="h1">
         Event Stream
-      </Heading>
+      </Typography>
       {!isLoading && events && (
-        <VStack divider={<Divider />}>
-          {events.map(event => {
+        <List>
+          {events.map((event, index) => {
             const date = formatMediumDate(event.eventDate);
             const isNewDay = date !== lastDate;
             const isToggleEvent = ToggleEventDataTypes.includes(event.eventDataType);
             const toggleStarted = isToggleEvent && event.eventValue !== EventToggle.Stop;
+            const ToggleBadge = (
+              <Badge
+                badgeContent={toggleStarted ? 'Started' : 'Stopped'}
+                color={toggleStarted ? 'success' : 'error'}
+              />
+            );
 
             lastDate = date;
 
             return (
               <>
                 {isNewDay && (
-                  <Container>
-                    <Heading size="lg">{date}</Heading>
-                  </Container>
+                  <ListSubheader>
+                    {date}
+                  </ListSubheader>
                 )}
-                <Container>
-                  <Flex align="center">
-                    <EventIcon eventDataType={event.eventDataType} />
-                    <Text fontSize="xl" pl={2}>
-                      {buttonLabels[event.eventDataType]}
-                    </Text>
-                    <Spacer />
-                    {isToggleEvent && (
-                      <Badge colorScheme={toggleStarted ? 'green' : 'red'}>
-                        {toggleStarted ? 'Started' : 'Stopped'}
-                      </Badge>
-                    )}
-                    <Text pl={2}>
-                      {formatShortTime(event.eventDate)}
-                    </Text>
-                  </Flex>
-                </Container>
+                <ListItem
+                  secondaryAction={isToggleEvent && ToggleBadge}
+                  divider
+                >
+                  <ListItemIcon>
+                    <EventIcon eventDataType={event.eventDataType} size={IconSize.Large} />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={buttonLabels[event.eventDataType]}
+                    secondary={formatShortTime(event.eventDate)}
+                  />
+                </ListItem>
               </>
             );
           })}
-        </VStack>
+        </List>
       )}
     </Container>
   )

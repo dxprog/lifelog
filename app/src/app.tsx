@@ -1,6 +1,6 @@
-import { ChakraProvider } from '@chakra-ui/react';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Grid } from '@mui/material';
 
 import Buttons from './pages/buttons';
 import EventsPage from './pages/events';
@@ -8,7 +8,7 @@ import StatsPage from './pages/stats';
 import { DeviceContextProvider } from './hooks/useDevice';
 
 export const App = () => (
-  <ChakraProvider>
+  <Grid>
     <BrowserRouter>
       <DeviceContextProvider value="28cdc109c02d">
         <Routes>
@@ -19,5 +19,5 @@ export const App = () => (
         </Routes>
       </DeviceContextProvider>
     </BrowserRouter>
-  </ChakraProvider>
+  </Grid>
 );
