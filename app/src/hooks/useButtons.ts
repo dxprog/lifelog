@@ -1,9 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 
 import { IButton } from '@shared/IButton';
-import { EventDataType } from "@shared/EventDataTypes";
 
-type ButtonLabelMap = Partial<Record<EventDataType, string>>;
+import { ButtonLabelMap } from './types';
 
 export function useButtons(deviceId: string) {
   const [ isLoading, setIsLoading ] = useState(false);

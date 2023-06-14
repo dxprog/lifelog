@@ -3,13 +3,9 @@ import { useEvents } from './useEvents';
 import { EventDataType, EventToggle, ToggleEventDataTypes } from '@shared/EventDataTypes';
 import { IEvent } from '@server/models/Event';
 
+import { EventStat, EventStats } from './types';
+
 type EventRollup = Partial<Record<EventDataType, IEvent[]>>;
-type EventStat = {
-  eventDataType: EventDataType;
-  count: number;
-  duration?: number;
-};
-type EventStats = EventStat[];
 
 export function useStats(deviceId: string, startDate: Date, endDate: Date) {
   const now = new Date();
