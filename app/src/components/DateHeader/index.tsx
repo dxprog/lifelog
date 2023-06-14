@@ -1,7 +1,9 @@
 import { useDateFormatter } from '@app/hooks/useDateFormatter';
-import { Button, Dialog } from '@mui/material';
+import { Button, Dialog, Stack } from '@mui/material';
 import { DateCalendar } from '@mui/x-date-pickers';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import React, { useCallback, useState } from 'react';
+import { TimeInMs } from '@shared/DateHelpers';
 
 type DateHeaderProps = {
   selectedDate: Date;
@@ -19,8 +21,13 @@ const DateHeader = ({ selectedDate, onDateChange }: DateHeaderProps) => {
     }
   }, [ onDateChange, setShowDatePicker ]);
 
+  const handleOneDayChange = useCallback((direction: number) => {
+    onDateChange(new Date(selectedDate.getTime() + TimeInMs.OneDay * direction));
+  }, [ selectedDate, onDateChange ]);
+
   return (
-    <>
+    <Stack direction="row">
+      <Button startIcon={<ChevronLeft />} onClick={() => handleOneDayChange(-1)} />
       <Button
         onClick={() => setShowDatePicker(!showDatePicker)}
         variant="outlined"
@@ -28,12 +35,13 @@ const DateHeader = ({ selectedDate, onDateChange }: DateHeaderProps) => {
       >
         {formatMediumDate(selectedDate)}
       </Button>
+      <Button startIcon={<ChevronRight />} onClick={() => handleOneDayChange(1)} />
       <Dialog open={showDatePicker} onClose={() => setShowDatePicker(false)}>
         <DateCalendar
           onChange={handleDateChange}
         />
       </Dialog>
-    </>
+    </Stack>
   );
 }
 
