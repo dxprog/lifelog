@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
-import { Avatar, Badge, Container, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, ListSubheader, Typography } from '@mui/material';
+import { Badge, Container, List, ListItem, ListItemIcon, ListItemText, ListSubheader, Typography } from '@mui/material';
 
+import { useAppHeader } from '@app/components/AppHeader';
 import EventIcon, { IconSize } from '@app/components/EventIcon';
 import { useEvents } from '@app/hooks/useEvents';
 import { useButtons } from '@app/hooks/useButtons';
@@ -10,6 +11,7 @@ import { EventToggle, ToggleEventDataTypes } from '@shared/EventDataTypes';
 
 const EventsPage = (): React.ReactElement => {
   const deviceId = useDevice();
+  const { setPageTitle } = useAppHeader();
   const { events, isLoading: eventsLoading } = useEvents(deviceId);
   const { buttonLabels, isLoading: buttonsLoading } = useButtons(deviceId);
   const { formatMediumDate, formatShortTime } = useDateFormatter();
@@ -19,6 +21,10 @@ const EventsPage = (): React.ReactElement => {
   );
 
   let lastDate: string = '';
+
+  useMemo(() => {
+    setPageTitle('Events');
+  }, [ setPageTitle ]);
 
   return (
     <Container>

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { CircularProgress, Container, Divider, Stack, Typography } from '@mui/material';
 
+import { useAppHeader } from '@app/components/AppHeader';
 import { useButtons } from '@app/hooks/useButtons';
 import { useDevice } from '@app/hooks/useDevice';
 
@@ -9,6 +10,11 @@ import { ButtonItem } from './components/Button';
 const Buttons = () => {
   const deviceId = useDevice();
   const { buttons, isLoading, updateButton } = useButtons(deviceId);
+  const { setPageTitle } = useAppHeader();
+
+  useMemo(() => {
+    setPageTitle('Device Buttons');
+  }, [ setPageTitle ]);
 
   return (
     <Container>

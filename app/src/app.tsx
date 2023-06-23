@@ -4,6 +4,7 @@ import { Grid } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
+import AppHeader from './components/AppHeader';
 import Buttons from './pages/buttons';
 import EventsPage from './pages/events';
 import StatsPage from './pages/stats';
@@ -14,12 +15,14 @@ export const App = () => (
     <Grid>
       <BrowserRouter>
         <DeviceContextProvider value="28cdc109c02d">
-          <Routes>
-            <Route path="/" element={<h1>Hey</h1>} />
-            <Route path="/buttons" element={<Buttons />} />
-            <Route path="/events" element={<EventsPage />} />
-            <Route path="/stats" element={<StatsPage />} />
-          </Routes>
+          <AppHeader>
+            <Routes>
+              <Route path="/" element={<h1>Hey</h1>} />
+              <Route path="/buttons" element={<Buttons />} />
+              <Route path="/events" element={<EventsPage />} />
+              <Route path="/stats" element={<StatsPage />} />
+            </Routes>
+          </AppHeader>
         </DeviceContextProvider>
       </BrowserRouter>
     </Grid>

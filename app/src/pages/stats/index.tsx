@@ -1,9 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useDevice } from '@app/hooks/useDevice';
-import { useStats } from '@app/hooks/useStats';
+import { useAppHeader } from '@app/components/AppHeader';
 import DateHeader from '@app/components/DateHeader';
 import RollupCard from '@app/components/RollupCard';
+import { useDevice } from '@app/hooks/useDevice';
+import { useStats } from '@app/hooks/useStats';
 import { useButtons } from '@app/hooks/useButtons';
 import { TimeInMs } from '@shared/DateHelpers';
 import { CircularProgress, Container, Stack, Typography } from '@mui/material';
@@ -23,10 +24,15 @@ const StatsPage = (): React.ReactElement => {
   const { isLoading: isButtonsLoading, hasError: hasButtonsError, buttonLabels } = useButtons(deviceId);
   const isLoading = useMemo(() => isStatsLoading || isButtonsLoading, [ isStatsLoading, isButtonsLoading ]);
   const hasError = useMemo(() => hasStatsError || hasButtonsError, [ hasStatsError, hasButtonsError ]);
+  const { setPageTitle } = useAppHeader();
 
   const handleDateChange = useCallback((newDate: Date) => {
     setStartDate(newDate);
   }, []);
+
+  useMemo(() => {
+    setPageTitle('Statistics');
+  }, [ setPageTitle ]);
 
   return (
     <Container>
