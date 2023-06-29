@@ -68,9 +68,10 @@ async function addEvent(req: express.Request, res: express.Response) {
   event.deviceId = data?.deviceId;
   event.eventDate = data?.eventDate ?? Date.now();
   event.eventDataType = button.eventDataType;
+  event.eventValue = data?.eventValue;
 
   // if this is a toggle data type, then we need to know if this is an "start" or "stop" event
-  if (ToggleEventDataTypes.includes(event.eventDataType)) {
+  if (ToggleEventDataTypes.includes(event.eventDataType) && !event?.eventValue) {
     const lastToggleEvent = await Event.findOne({
       where: {
         eventDataType: event.eventDataType,
@@ -82,12 +83,10 @@ async function addEvent(req: express.Request, res: express.Response) {
       }
     });
 
-    if (!data?.eventValue) {
-      if (!lastToggleEvent || lastToggleEvent.eventValue !== EventToggle.Start) {
-        event.eventValue = EventToggle.Start;
-      } else {
-        event.eventValue = EventToggle.Stop;
-      }
+    if (!lastToggleEvent || lastToggleEvent.eventValue !== EventToggle.Start) {
+      event.eventValue = EventToggle.Start;
+    } else {
+      event.eventValue = EventToggle.Stop;
     }
   }
 
